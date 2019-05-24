@@ -10,12 +10,12 @@ type userService struct {
 	contextTimeout time.Duration
 }
 
-func NewUserService(userRepository database.Repository, contextTimeout time.Duration) Service {
-	return &userService{userRepository, contextTimeout}
-}
-
 type Service interface {
 	GetAllUsers() []User
+}
+
+func NewUserService(userRepository database.Repository, contextTimeout time.Duration) Service {
+	return &userService{userRepository, contextTimeout}
 }
 
 func (userService *userService) GetAllUsers() []User {

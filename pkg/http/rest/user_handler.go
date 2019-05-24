@@ -10,7 +10,6 @@ type UserHandler struct {
 	Lister listing.Service
 }
 
-// NewArticleHandler will initialize the articles/ resources endpoint
 func NewUserHandler(e *echo.Echo, lister listing.Service) {
 	handler := &UserHandler{
 		Lister: lister,
@@ -22,7 +21,6 @@ func NewUserHandler(e *echo.Echo, lister listing.Service) {
 	e.DELETE("/users/:id", handler.GetUsers)
 }
 
-// FetchArticle will fetch the article based on given params
 func (a *UserHandler) GetUsers(c echo.Context) error {
 	return c.JSON(http.StatusOK, a.Lister.GetAllUsers())
 }

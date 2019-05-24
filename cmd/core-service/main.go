@@ -16,6 +16,7 @@ func main() {
 	timeoutContext := time.Duration(1) * time.Second
 
 	userService := listing.NewUserService(userRepository, timeoutContext)
+
 	rest.NewUserHandler(e, userService)
 
 	e.Logger.Fatal(e.Start(":10000"))
