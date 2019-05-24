@@ -1,17 +1,28 @@
 package rest
 
 import (
-	"net/http"
-
 	"github.com/israjHaliri/go-hexagonal-service/pkg/listing"
 	"github.com/labstack/echo"
+	"net/http"
 )
 
-func GetUsers(c echo.Context) error {
-	// User ID from path `users/:id`
-	// id := c.Param("id")
+type UserHandler struct {
+	Lister listing.Service
+}
 
-	list := listing.GetUsers()
+// NewArticleHandler will initialize the articles/ resources endpoint
+func NewUserHandler(e *echo.Echo, lister listing.Service) {
+	handler := &UserHandler{
+		Lister: lister,
+	}
 
-	return c.JSON(http.StatusOK, list)
+	e.GET("/users", handler.GetUsers)
+	e.GET("/users/:id", handler.GetUsers)
+	e.POST("/users", handler.GetUsers)
+	e.DELETE("/users/:id", handler.GetUsers)
+}
+
+// FetchArticle will fetch the article based on given params
+func (a *UserHandler) GetUsers(c echo.Context) error {
+	return c.JSON(http.StatusOK, a.Lister.GetAllUsers())
 }
