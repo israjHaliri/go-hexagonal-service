@@ -1,0 +1,26 @@
+version: '3.3'
+services:
+  percona-local:
+    container_name: percona-local
+    image: percona:5.7
+    environment:
+      MYSQL_DATABASE: go-hexagonal-service
+      MYSQL_ROOT_PASSWORD: ""
+      MYSQL_ALLOW_EMPTY_PASSWORD: "true"
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+    ports:
+      - "3306:3306"
+    restart: always
+    networks:
+      - local-net
+
+  sqlite-local:
+    image: nouchka/sqlite3:latest
+    stdin_open: true
+    tty: true
+    volumes:
+    - ./db/:/root/db/
+
+networks:
+  local-net: {}

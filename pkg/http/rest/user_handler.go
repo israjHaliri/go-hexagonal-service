@@ -21,6 +21,12 @@ func NewUserHandler(e *echo.Echo, lister listing.Service) {
 	e.DELETE("/users/:id", handler.GetUsers)
 }
 
-func (a *UserHandler) GetUsers(c echo.Context) error {
-	return c.JSON(http.StatusOK, a.Lister.GetAllUsers())
+func (userhandler *UserHandler) GetUsers(c echo.Context) error {
+	listUser, err := userhandler.Lister.GetAllUsers()
+
+	if err != nil {
+		return c.JSON(http.StatusOK, err)
+	}
+
+	return c.JSON(http.StatusNotFound, listUser)
 }

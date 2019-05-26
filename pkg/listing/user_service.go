@@ -9,23 +9,25 @@ type userService struct {
 }
 
 type Service interface {
-	GetAllUsers() []User
+	GetAllUsers() ([]User, error)
 }
 
 func NewUserService(userRepository database.Repository) Service {
 	return &userService{userRepository}
 }
 
-func (userService *userService) GetAllUsers() []User {
-	listUserDatabase := userService.userRepository.FindAllUser()
+func (userService *userService) GetAllUsers() ([]User, error) {
+	listUserDatabase, err := userService.userRepository.FindAllUser()
 
-	users := []User{}
+	listUser := []User{}
 
-	for _, data := range listUserDatabase {
-		user := User{}
-		user.Name = data.Name
-		users = append(users, user)
+	if len(listUserDatabase) > 0 && err != nil {
+		for _, data := range listUserDatabase {
+			user := User{}
+			user.Name = data.Name
+			listUser = append(listUser, user)
+		}
 	}
 
-	return users
+	return listUser, nil
 }

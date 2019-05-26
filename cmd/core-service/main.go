@@ -9,7 +9,8 @@ import (
 )
 
 func main() {
-	gormDB := config.Open()
+	connectionDatabase := config.NewMysqlConnectionDatabase()
+	gormDB := connectionDatabase.Open()
 	gormDB.AutoMigrate(database.User{})
 
 	e := echo.New()
