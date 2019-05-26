@@ -1,21 +1,22 @@
 package main
 
 import (
+	"github.com/israjHaliri/go-hexagonal-service/pkg/config"
 	"github.com/israjHaliri/go-hexagonal-service/pkg/http/rest"
 	"github.com/israjHaliri/go-hexagonal-service/pkg/listing"
 	"github.com/israjHaliri/go-hexagonal-service/pkg/storage/database"
 	"github.com/labstack/echo"
-	"time"
 )
 
 func main() {
+	gormDB := config.Open()
+	gormDB.AutoMigrate(database.User{})
+
 	e := echo.New()
 
-	userRepository := database.NewUserRepository("")
+	userRepository := database.NewUserRepository(gormDB)
 
-	timeoutContext := time.Duration(1) * time.Second
-
-	userService := listing.NewUserService(userRepository, timeoutContext)
+	userService := listing.NewUserService(userRepository)
 
 	rest.NewUserHandler(e, userService)
 

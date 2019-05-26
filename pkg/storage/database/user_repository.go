@@ -1,22 +1,29 @@
 package database
 
-import "time"
+import (
+	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/mysql"
+)
 
 type Connection struct {
-	Url string
+	GormDb *gorm.DB
 }
 
 type Repository interface {
 	FindAllUser() []User
 }
 
-func NewUserRepository(Url string) Repository {
-	return &Connection{Url}
+func NewUserRepository(gormDB *gorm.DB) Repository {
+	return &Connection{gormDB}
 }
 
 func (conn *Connection) FindAllUser() []User {
 	listUser := []User{}
-	listUser = append(listUser, User{1, "Israj", time.Now()})
+
+	db := conn.GormDb
+	defer db.Close()
+
+	db.Find(&listUser)
 
 	return listUser
 }

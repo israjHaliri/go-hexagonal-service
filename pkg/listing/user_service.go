@@ -2,20 +2,18 @@ package listing
 
 import (
 	"github.com/israjHaliri/go-hexagonal-service/pkg/storage/database"
-	"time"
 )
 
 type userService struct {
 	userRepository database.Repository
-	contextTimeout time.Duration
 }
 
 type Service interface {
 	GetAllUsers() []User
 }
 
-func NewUserService(userRepository database.Repository, contextTimeout time.Duration) Service {
-	return &userService{userRepository, contextTimeout}
+func NewUserService(userRepository database.Repository) Service {
+	return &userService{userRepository}
 }
 
 func (userService *userService) GetAllUsers() []User {
