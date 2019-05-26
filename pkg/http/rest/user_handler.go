@@ -18,6 +18,7 @@ func NewUserHandler(e *echo.Echo, lister listing.Service) {
 	e.GET("/users", handler.GetUsers)
 	e.GET("/users/:id", handler.GetUsers)
 	e.POST("/users", handler.GetUsers)
+	e.PUT("/users", handler.GetUsers)
 	e.DELETE("/users/:id", handler.GetUsers)
 }
 

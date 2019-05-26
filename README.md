@@ -9,6 +9,9 @@
 ## To build follow this checklist:
     + get into directory project then type : cd cmd && go build -o {app_name}
 
+## To run testing
+    + go test -v ./pkg/storage/database
+
 ## Note: 
     ++ for production use supervisor using commad go run {app_name}
     ++ pattern take from https://github.com/sourcegraph/about/blob/master/blogposts/gophercon-2018-how-do-you-structure-your-go-apps.md
