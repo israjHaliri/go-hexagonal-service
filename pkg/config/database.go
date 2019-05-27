@@ -35,7 +35,7 @@ func (mysql Mysql) Open() *gorm.DB {
 }
 
 func (sqlite SqLite) Open() *gorm.DB {
-	db, err := gorm.Open("sqlite3", "/tmp/gorm.db")
+	db, err := gorm.Open("sqlite3", "/tmp/go-hexagonal-service.db")
 
 	if err != nil {
 		panic(err)

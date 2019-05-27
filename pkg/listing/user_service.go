@@ -5,14 +5,14 @@ import (
 )
 
 type userService struct {
-	userRepository database.Repository
+	userRepository database.UserRepository
 }
 
 type Service interface {
 	GetAllUsers() ([]User, error)
 }
 
-func NewUserService(userRepository database.Repository) Service {
+func NewUserService(userRepository database.UserRepository) Service {
 	return &userService{userRepository}
 }
 
@@ -24,7 +24,13 @@ func (userService *userService) GetAllUsers() ([]User, error) {
 	if len(listUserDatabase) > 0 && err != nil {
 		for _, data := range listUserDatabase {
 			user := User{}
-			user.Name = data.Name
+			user.ID = data.ID
+			user.Username = data.Username
+			user.Password = data.Password
+			user.Email = data.Email
+			user.Active = data.Active
+			user.Created = data.Created
+			user.Updated = data.Updated
 			listUser = append(listUser, user)
 		}
 	}

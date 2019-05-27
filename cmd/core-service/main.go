@@ -11,7 +11,11 @@ import (
 func main() {
 	connectionDatabase := config.NewMysqlConnectionDatabase()
 	gormDB := connectionDatabase.Open()
+
+	defer gormDB.Close()
+
 	gormDB.AutoMigrate(database.User{})
+	gormDB.AutoMigrate(database.Role{})
 
 	e := echo.New()
 

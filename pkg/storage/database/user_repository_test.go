@@ -15,7 +15,7 @@ var connectionTest struct {
 }
 
 func TestMain(m *testing.M) {
-	connectionDatabase := config.NewSqliteConnectionDatabase()
+	connectionDatabase := config.NewMysqlConnectionDatabase()
 	gormDB := connectionDatabase.Open()
 	gormDB.AutoMigrate(User{})
 
@@ -30,71 +30,94 @@ func TestMain(m *testing.M) {
 	os.Exit(code)
 }
 
-func TestSave(t *testing.T) {
+func TestSaveUser(t *testing.T) {
 	userRepository := NewUserRepository(connectionTest.GormDb)
 
 	user := User{}
-	user.Name = "israj"
+	user.Username = "israj"
+	user.Password = "12345678"
+	user.Email = "israj.haliri@gmail.com"
+	user.Active = true
 	user.Created = time.Now()
 
-	_, err := userRepository.Save(user)
+	_, err := userRepository.SaveUser(user)
 
 	if err != nil {
-		t.Error("Testing save user failed !")
+		t.Error("Testing save user failed !", err)
 	} else {
 		t.Log("Testing save user ok !")
 	}
 }
 
-func TestUpdate(t *testing.T) {
+func TestFindAllUser(t *testing.T) {
 	userRepository := NewUserRepository(connectionTest.GormDb)
 
-	listUsers, _ := userRepository.FindAllUser()
-
-	user := listUsers[0]
-	user.Name = "Jono Haliri"
-
-	_, err := userRepository.Update(user)
+	_, err := userRepository.FindAllUser()
 
 	if err != nil {
-		t.Error("Testing update user failed !")
+		t.Log(" Testing find all users failed !", err)
+	} else {
+		t.Log("Testing find all users ok !")
+	}
+}
+
+func TestFindUserById(t *testing.T) {
+	userRepository := NewUserRepository(connectionTest.GormDb)
+
+	listUser, errListing := userRepository.FindAllUser()
+
+	if errListing != nil {
+		t.Error("Testing update user failed !", errListing)
+	}
+
+	_, err := userRepository.FindUserById(listUser[0].ID)
+
+	if err != nil {
+		t.Error("Testing find by id user failed !", err)
+	} else {
+		t.Log("Testing find by id user ok !")
+	}
+}
+
+func TestUpdateUser(t *testing.T) {
+	userRepository := NewUserRepository(connectionTest.GormDb)
+
+	listUser, errListing := userRepository.FindAllUser()
+
+	if errListing != nil {
+		t.Error("Testing update user failed !", errListing)
+	}
+
+	user := listUser[0]
+	user.Username = "israj h"
+	user.Password = "12345678"
+	user.Email = "israj.haliri@gmail.com"
+	user.Active = true
+	user.Created = time.Now()
+
+	_, err := userRepository.UpdateUser(user)
+
+	if err != nil {
+		t.Error("Testing update user failed !", err)
 	} else {
 		t.Log("Testing update user ok !")
 	}
 }
 
-//func TestFindAll(t *testing.T) {
-//	gormDB := setupConnection()
-//
-//	userRepository := NewUserRepository(gormDB)
-//
-//	listUsers, err := userRepository.FindAllUser()
-//
-//	if len(listUsers) >= 1 && err != nil {
-//		t.Log("Find all users ok !")
-//	}
-//}
-//
-//func TestFindById(t *testing.T) {
-//	gormDB := setupConnection()
-//
-//	userRepository := NewUserRepository(gormDB)
-//
-//	listUsers, err := userRepository.FindAllUser()
-//
-//	if len(listUsers) >= 1 && err != nil {
-//		t.Log("Find all users ok !")
-//	}
-//}
-//
-//func TestDelete(t *testing.T) {
-//	gormDB := setupConnection()
-//
-//	userRepository := NewUserRepository(gormDB)
-//
-//	listUsers, err := userRepository.FindAllUser()
-//
-//	if len(listUsers) >= 1 && err != nil {
-//		t.Log("Find2 all users ok !")
-//	}
-//}
+func TestDeleteUser(t *testing.T) {
+	userRepository := NewUserRepository(connectionTest.GormDb)
+
+	listUser, errListing := userRepository.FindAllUser()
+
+	if errListing != nil {
+		t.Error("Testing update user failed !", errListing)
+	}
+
+	err := userRepository.DeleteUser(listUser[0].ID)
+
+	if err != nil || errListing != nil {
+		t.Error("Testing delete user failed !")
+	} else {
+		t.Log("Testing delete user ok !")
+	}
+}

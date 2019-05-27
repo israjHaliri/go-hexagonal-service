@@ -5,14 +5,14 @@ import (
 )
 
 type userService struct {
-	userRepository database.Repository
+	userRepository database.RoleRepository
 }
 
 type Service interface {
 	GetAllUsers() ([]User, error)
 }
 
-func NewUserService(userRepository database.Repository) Service {
+func NewUserService(userRepository database.RoleRepository) Service {
 	return &userService{userRepository}
 }
 
