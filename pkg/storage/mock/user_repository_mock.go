@@ -6,11 +6,11 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
-type userRepositoryMock struct {
+type UserRepositoryMock struct {
 	mock.Mock
 }
 
-func (mock *userRepositoryMock) SaveUser(user database.User) (database.User, error) {
+func (mock *UserRepositoryMock) SaveUser(user database.User) (database.User, error) {
 	//retrival := mock.Called(user)
 	//
 	//var return0 database.User
@@ -27,18 +27,32 @@ func (mock *userRepositoryMock) SaveUser(user database.User) (database.User, err
 	panic("implement me")
 }
 
-func (mock *userRepositoryMock) FindAllUser() ([]database.User, error) {
+func (mock *UserRepositoryMock) FindAllUser() ([]database.User, error) {
+	//retrival := mock.Called()
+	//
+	//var return0 database.User
+	//var return1 error
+	//if ref, ok := retrival.Get(0).(func(*database.User) error); ok {
+	//	return0 = ref(&user)
+	//	return1 = ref(&user)
+	//} else {
+	//	return0 = retrival.Error(0)
+	//}
+	//
+	//return return0
+
+	users := []database.User{}
+	return users, nil
+}
+
+func (mock *UserRepositoryMock) FindUserById(id int) (database.User, error) {
 	panic("implement me")
 }
 
-func (mock *userRepositoryMock) FindUserById(id int) (database.User, error) {
+func (mock *UserRepositoryMock) UpdateUser(user database.User) (database.User, error) {
 	panic("implement me")
 }
 
-func (mock *userRepositoryMock) UpdateUser(user database.User) (database.User, error) {
-	panic("implement me")
-}
-
-func (mock *userRepositoryMock) DeleteUser(id int) error {
+func (mock *UserRepositoryMock) DeleteUser(id int) error {
 	panic("implement me")
 }
