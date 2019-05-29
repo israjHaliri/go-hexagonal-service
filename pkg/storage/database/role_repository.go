@@ -6,10 +6,10 @@ import (
 )
 
 type RoleRepository interface {
-	SaveRole(user Role) (Role, error)
+	SaveRole(role Role) (Role, error)
 	FindAllRole() ([]Role, error)
 	FindRoleById(id int) (Role, error)
-	UpdateRole(user Role) (Role, error)
+	UpdateRole(role Role) (Role, error)
 	DeleteRole(id int) error
 }
 
@@ -17,20 +17,18 @@ func NewRoleRepository(gormDB *gorm.DB) RoleRepository {
 	return &Connection{gormDB}
 }
 
-func (conn *Connection) SaveRole(user Role) (Role, error) {
+func (conn *Connection) SaveRole(role Role) (Role, error) {
 	db := conn.GormDb
-	defer db.Close()
 
-	err := db.Create(&user).Error
+	err := db.Create(&role).Error
 
-	return user, err
+	return role, err
 }
 
 func (conn *Connection) FindAllRole() ([]Role, error) {
 	listRole := []Role{}
 
 	db := conn.GormDb
-	defer db.Close()
 
 	err := db.Find(&listRole).Error
 
@@ -39,31 +37,28 @@ func (conn *Connection) FindAllRole() ([]Role, error) {
 
 func (conn *Connection) FindRoleById(id int) (Role, error) {
 	db := conn.GormDb
-	defer db.Close()
 
-	user := Role{}
+	role := Role{}
 
-	err := db.Where("id = ?", id).First(&user).Error
+	err := db.Where("id = ?", id).First(&role).Error
 
 	if err != nil {
-		return user, err
+		return role, err
 	}
 
-	return user, nil
+	return role, nil
 }
 
-func (conn *Connection) UpdateRole(user Role) (Role, error) {
+func (conn *Connection) UpdateRole(role Role) (Role, error) {
 	db := conn.GormDb
-	defer db.Close()
 
-	err := db.Save(&user).Error
+	err := db.Save(&role).Error
 
-	return user, err
+	return role, err
 }
 
 func (conn *Connection) DeleteRole(id int) error {
 	db := conn.GormDb
-	defer db.Close()
 
 	err := db.Delete(&Role{}, "id = ?", id).Error
 

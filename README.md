@@ -4,13 +4,15 @@
 
 ## To get started follow this checklist:
     + create schema depends on datasource.go
+    + run migration go run cmd/migration/main.go
     + get into directory project then type : cd cmd && go run main.go
 
 ## To build follow this checklist:
     + get into directory project then type : cd cmd && go build -o {app_name}
 
 ## To run testing
-    + go test -v ./pkg/storage/database
+    + run migration go run cmd/migration/main.go
+    + go test -v ./pkg/storage/database/ -cover -count=1
 
 ## Note: 
     ++ for production use supervisor using commad go run {app_name}

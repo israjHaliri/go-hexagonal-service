@@ -1,56 +1,25 @@
 package database
 
 import (
-	"github.com/israjHaliri/go-hexagonal-service/pkg/config"
-	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
-	"os"
 	"testing"
 	"time"
 )
-
-var connectionTest struct {
-	GormDb *gorm.DB
-}
-
-func TestMain(m *testing.M) {
-	connectionDatabase := config.NewMysqlConnectionDatabase()
-	gormDB := connectionDatabase.Open()
-	gormDB.AutoMigrate(&User{}, &Role{})
-
-	if err := gormDB.Table("user_roles").AddForeignKey("role_id", "roles (id)", "CASCADE", "CASCADE").Error; err != nil {
-		gormDB.DropTable(&User{}, &Role{}, "user_roles")
-
-		panic(err)
-	}
-
-	connectionTest.GormDb = gormDB
-
-	code := m.Run()
-
-	connectionTest.GormDb = nil
-
-	gormDB.Close()
-
-	os.Exit(code)
-}
 
 func TestSaveUser(t *testing.T) {
 	userRepository := NewUserRepository(connectionTest.GormDb)
 
 	user := User{}
-	user.Username = "israjj"
+	user.Username = "israj"
 	user.Password = "12345678"
 	user.Email = "israj.haliri@gmail.com"
 	user.Active = true
 	user.Created = time.Now()
 
-	role := Role{}
-	role.Role = "AMDIN"
+	roleRepository := NewRoleRepository(connectionTest.GormDb)
 
-	listRoles := []Role{}
-	listRoles = append(listRoles, role)
+	listRoles, _ := roleRepository.FindAllRole()
 
 	user.Roles = listRoles
 
@@ -118,20 +87,25 @@ func TestUpdateUser(t *testing.T) {
 	}
 }
 
-//func TestDeleteUser(t *testing.T) {
-//	userRepository := NewUserRepository(connectionTest.GormDb)
-//
-//	listUser, errListing := userRepository.FindAllUser()
-//
-//	if errListing != nil {
-//		t.Error("Testing update user failed !", errListing)
-//	}
-//
-//	err := userRepository.DeleteUser(listUser[0].ID)
-//
-//	if err != nil || errListing != nil {
-//		t.Error("Testing delete user failed !")
-//	} else {
-//		t.Log("Testing delete user ok !")
-//	}
-//}
+func TestDeleteUser(t *testing.T) {
+	userRepository := NewUserRepository(connectionTest.GormDb)
+
+	listUser, errListing := userRepository.FindAllUser()
+
+	if errListing != nil {
+		t.Error("Testing update user failed !", errListing)
+	}
+
+	var err []error
+	for _, data := range listUser {
+		err = append(err, userRepository.DeleteUser(data.ID))
+	}
+
+	if err[0] != nil || errListing != nil {
+		t.Error("Testing delete user failed !", err)
+	} else {
+		t.Log("Testing delete user ok !")
+	}
+
+	connectionTest.GormDb.Exec("DELETE FROM user_roles")
+}

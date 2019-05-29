@@ -14,9 +14,6 @@ func main() {
 
 	defer gormDB.Close()
 
-	gormDB.AutoMigrate(database.User{})
-	gormDB.AutoMigrate(database.Role{})
-
 	e := echo.New()
 
 	userRepository := database.NewUserRepository(gormDB)
