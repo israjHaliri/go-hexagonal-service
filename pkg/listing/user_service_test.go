@@ -1,31 +1,31 @@
 package listing
 
 import (
-	"github.com/israjHaliri/go-hexagonal-service/pkg/storage/database"
-	"github.com/israjHaliri/go-hexagonal-service/pkg/storage/mock"
-	"github.com/labstack/gommon/log"
+	"github.com/biezhi/gorm-paginator/pagination"
+	"github.com/israjHaliri/go-hexagonal-service/pkg/storage/mocks"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
 	"testing"
-	"time"
 )
 
 func TestGetAllUsers(t *testing.T) {
-	userRepositoryMock := new(mock.UserRepositoryMock)
+	userRepositoryMock := new(mocks.UserRepositoryMock)
 
-	mockRoles := []database.Role{}
-	mockUser := database.User{1, "israj", "israj.haliri@gmail.com", "qwerty", true, time.Now(), time.Now(), mockRoles}
+	var mockPaginator = new(pagination.Paginator)
 
-	mockListUser := make([]database.User, 0)
-	mockListUser = append(mockListUser, mockUser)
+	mockPaginator.TotalRecord = 10
+	mockPaginator.Records = []User{}
+	mockPaginator.Page = 1
 
-	userRepositoryMock.On("FindAllUser", 1).Return(mockListUser, nil).Once()
+	mockPaginator.Offset = 0
+	mockPaginator.Limit = 10
+	mockPaginator.TotalPage = 1
+
+	userRepositoryMock.On("FindAllUser", mock.AnythingOfType("int"), mock.AnythingOfType("int")).Return(mockPaginator).Once()
 
 	userService := NewUserService(userRepositoryMock)
-	listUser, _ := userService.GetAllUsers()
+	resultPaginator := userService.GetAllUsers(1, 10)
 
-	log.Info(len(mockListUser))
-	log.Info(len(listUser))
-
-	assert.Len(t, listUser, len(mockListUser))
+	assert.Equal(t, resultPaginator.TotalRecord, mockPaginator.TotalRecord)
 	userRepositoryMock.AssertExpectations(t)
 }

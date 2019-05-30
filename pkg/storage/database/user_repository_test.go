@@ -3,6 +3,7 @@ package database
 import (
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
+	"reflect"
 	"testing"
 	"time"
 )
@@ -35,25 +36,25 @@ func TestSaveUser(t *testing.T) {
 func TestFindAllUser(t *testing.T) {
 	userRepository := NewUserRepository(connectionTest.GormDb)
 
-	_, err := userRepository.FindAllUser()
+	paginator := userRepository.FindAllUser(1, 10)
 
-	if err != nil {
-		t.Log(" Testing find all users failed !", err)
+	if paginator.TotalRecord < 1 {
+		t.Log(" Testing find all users failed !")
 	} else {
-		t.Log("Testing find all users ok !")
+		t.Log("Testing find all users ok ! ")
 	}
 }
 
 func TestFindUserById(t *testing.T) {
 	userRepository := NewUserRepository(connectionTest.GormDb)
 
-	listUser, errListing := userRepository.FindAllUser()
+	paginator := userRepository.FindAllUser(1, 10)
 
-	if errListing != nil {
-		t.Error("Testing update user failed !", errListing)
-	}
+	list := reflect.ValueOf(paginator.Records).Interface().(*[]User)
 
-	_, err := userRepository.FindUserById(listUser[0].ID)
+	user := (*list)[0]
+
+	_, err := userRepository.FindUserById(user.ID)
 
 	if err != nil {
 		t.Error("Testing find by id user failed !", err)
@@ -65,22 +66,23 @@ func TestFindUserById(t *testing.T) {
 func TestUpdateUser(t *testing.T) {
 	userRepository := NewUserRepository(connectionTest.GormDb)
 
-	listUser, errListing := userRepository.FindAllUser()
+	paginator := userRepository.FindAllUser(1, 10)
 
-	if errListing != nil {
-		t.Error("Testing update user failed !", errListing)
-	}
+	list := reflect.ValueOf(paginator.Records).Interface().(*[]User)
 
-	user := listUser[0]
+	user := (*list)[0]
+
+	user, err := userRepository.FindUserById(user.ID)
+
 	user.Username = "israj h"
 	user.Password = "12345678"
 	user.Email = "israj.haliri@gmail.com"
 	user.Active = true
 	user.Updated = time.Now()
 
-	_, err := userRepository.UpdateUser(user)
+	_, errUpdate := userRepository.UpdateUser(user)
 
-	if err != nil {
+	if errUpdate != nil {
 		t.Error("Testing update user failed !", err)
 	} else {
 		t.Log("Testing update user ok !")
@@ -90,18 +92,16 @@ func TestUpdateUser(t *testing.T) {
 func TestDeleteUser(t *testing.T) {
 	userRepository := NewUserRepository(connectionTest.GormDb)
 
-	listUser, errListing := userRepository.FindAllUser()
+	paginator := userRepository.FindAllUser(1, 10)
 
-	if errListing != nil {
-		t.Error("Testing update user failed !", errListing)
-	}
+	list := reflect.ValueOf(paginator.Records).Interface().(*[]User)
 
 	var err []error
-	for _, data := range listUser {
+	for _, data := range *list {
 		err = append(err, userRepository.DeleteUser(data.ID))
 	}
 
-	if err[0] != nil || errListing != nil {
+	if err[0] != nil {
 		t.Error("Testing delete user failed !", err)
 	} else {
 		t.Log("Testing delete user ok !")

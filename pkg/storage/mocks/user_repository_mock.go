@@ -1,9 +1,9 @@
-package mock
+package mocks
 
 import (
+	"github.com/biezhi/gorm-paginator/pagination"
 	"github.com/israjHaliri/go-hexagonal-service/pkg/storage/database"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
-	"github.com/labstack/gommon/log"
 	"github.com/stretchr/testify/mock"
 )
 
@@ -12,7 +12,7 @@ type UserRepositoryMock struct {
 }
 
 func (mock *UserRepositoryMock) SaveUser(user database.User) (database.User, error) {
-	//retrival := mock.Called(user)
+	//retrival := mocks.Called(user)
 	//
 	//var return0 database.User
 	//var return1 error
@@ -28,30 +28,20 @@ func (mock *UserRepositoryMock) SaveUser(user database.User) (database.User, err
 	panic("implement me")
 }
 
-func (mock *UserRepositoryMock) FindAllUser(total int) ([]database.User, error) {
-	retrival := mock.Called(total)
+func (mock *UserRepositoryMock) FindAllUser(page int, limit int) *pagination.Paginator {
+	retrival := mock.Called(page, limit)
 
-	var return0 []database.User
+	var return0 *pagination.Paginator
 
-	if ref, ok := retrival.Get(0).(func() []database.User); ok {
+	if ref, ok := retrival.Get(0).(func() *pagination.Paginator); ok {
 		return0 = ref()
 	} else {
 		if retrival.Get(0) != nil {
-			return0 = retrival.Get(0).([]database.User)
+			return0 = retrival.Get(0).(*pagination.Paginator)
 		}
 	}
 
-	var return2 error
-	if ref, ok := retrival.Get(1).(func() error); ok {
-		return2 = ref()
-	} else {
-		return2 = retrival.Error(1)
-	}
-
-	log.Info("len users : ", len(return0))
-	log.Info("user : ", return0[0])
-
-	return retrival.Get(0).([]database.User), return2
+	return return0
 }
 
 func (mock *UserRepositoryMock) FindUserById(id int) (database.User, error) {

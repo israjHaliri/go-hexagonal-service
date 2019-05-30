@@ -1,13 +1,14 @@
 package database
 
 import (
+	"github.com/biezhi/gorm-paginator/pagination"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
 
 type UserRepository interface {
 	SaveUser(user User) (User, error)
-	FindAllUser(total int) ([]User, error)
+	FindAllUser(page int, limit int) *pagination.Paginator
 	FindUserById(id int) (User, error)
 	UpdateUser(user User) (User, error)
 	DeleteUser(id int) error
@@ -25,14 +26,20 @@ func (conn *Connection) SaveUser(user User) (User, error) {
 	return user, err
 }
 
-func (conn *Connection) FindAllUser(total int) ([]User, error) {
-	listUser := []User{}
+func (conn *Connection) FindAllUser(page int, limit int) *pagination.Paginator {
+	var listUser []User
 
 	db := conn.GormDb
 
-	err := db.Find(&listUser).Error
+	paginator := pagination.Paging(&pagination.Param{
+		DB:      db,
+		Page:    page,
+		Limit:   limit,
+		OrderBy: []string{"id desc"},
+		ShowSQL: false,
+	}, &listUser)
 
-	return listUser, err
+	return paginator
 }
 
 func (conn *Connection) FindUserById(id int) (User, error) {

@@ -3,6 +3,7 @@ module github.com/israjHaliri/go-hexagonal-service
 go 1.12
 
 require (
+	github.com/biezhi/gorm-paginator/pagination v0.0.0-20190124091837-7a5c8ed20334
 	github.com/jinzhu/gorm v1.9.8
 	github.com/labstack/echo v3.3.10+incompatible
 	github.com/labstack/gommon v0.2.8

@@ -23,11 +23,7 @@ func NewUserHandler(e *echo.Echo, lister listing.Service) {
 }
 
 func (userhandler *UserHandler) GetUsers(c echo.Context) error {
-	listUser, err := userhandler.Lister.GetAllUsers()
-
-	if err != nil {
-		return c.JSON(http.StatusOK, err)
-	}
+	listUser := userhandler.Lister.GetAllUsers(1, 10)
 
 	return c.JSON(http.StatusNotFound, listUser)
 }
