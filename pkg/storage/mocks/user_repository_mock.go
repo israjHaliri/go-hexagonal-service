@@ -12,20 +12,26 @@ type UserRepositoryMock struct {
 }
 
 func (mock *UserRepositoryMock) SaveUser(user database.User) (database.User, error) {
-	//retrival := mocks.Called(user)
-	//
-	//var return0 database.User
-	//var return1 error
-	//if ref, ok := retrival.Get(0).(func(*database.User) error); ok {
-	//	return0 = ref(&user)
-	//	return1 = ref(&user)
-	//} else {
-	//	return0 = retrival.Error(0)
-	//}
-	//
-	//return return0
+	retrival := mock.Called(user)
 
-	panic("implement me")
+	var return0 database.User
+	var return1 error
+
+	if ref, ok := retrival.Get(0).(func(database.User) database.User); ok {
+		return0 = ref(user)
+	} else {
+		if retrival.Get(0) != nil {
+			return0 = retrival.Get(0).(database.User)
+		}
+	}
+
+	if ref, ok := retrival.Get(1).(func(database.User) error); ok {
+		return1 = ref(user)
+	} else {
+		return1 = retrival.Error(1)
+	}
+
+	return return0, return1
 }
 
 func (mock *UserRepositoryMock) FindAllUser(page int, limit int) *pagination.Paginator {

@@ -1,11 +1,8 @@
-package listing
-
-import (
-	"time"
-)
+package saving
 
 type User struct {
-	ID      int       `json:"id"`
-	Name    string    `json:"name"`
-	Created time.Time `json:"created"`
+	Username string `json:"username"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
+	Active   bool   `json:"active"`
 }

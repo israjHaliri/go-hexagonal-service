@@ -1,33 +1,36 @@
-package listing
+package saving
 
 import (
 	"github.com/israjHaliri/go-hexagonal-service/pkg/storage/database"
+	"time"
 )
 
-type userService struct {
-	userRepository database.RoleRepository
+type implementUser struct {
+	userRepository database.UserRepository
 }
 
-type Service interface {
-	GetAllUsers() ([]User, error)
+type UserService interface {
+	CreateUser(user *User) (*User, error)
+	UpdateUser(user *User) (*User, error)
 }
 
-func NewUserService(userRepository database.RoleRepository) Service {
-	return &userService{userRepository}
+func NewService(userRepository database.UserRepository) UserService {
+	return &implementUser{userRepository}
 }
 
-func (userService *userService) GetAllUsers() ([]User, error) {
-	listUserDatabase, err := userService.userRepository.FindAllUser()
+func (userService *implementUser) CreateUser(user *User) (*User, error) {
+	dbUser := database.User{}
+	dbUser.Username = user.Username
+	dbUser.Email = user.Email
+	dbUser.Password = user.Password
+	dbUser.Active = user.Active
+	dbUser.Created = time.Now()
 
-	listUser := []User{}
+	_, err := userService.userRepository.SaveUser(dbUser)
 
-	if len(listUserDatabase) > 0 && err != nil {
-		for _, data := range listUserDatabase {
-			user := User{}
-			user.Name = data.Name
-			listUser = append(listUser, user)
-		}
-	}
+	return user, err
+}
 
-	return listUser, nil
+func (userService *implementUser) UpdateUser(user *User) (*User, error) {
+	panic("implement me")
 }

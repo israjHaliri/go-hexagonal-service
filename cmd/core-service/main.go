@@ -4,6 +4,7 @@ import (
 	"github.com/israjHaliri/go-hexagonal-service/pkg/config"
 	"github.com/israjHaliri/go-hexagonal-service/pkg/http/rest"
 	"github.com/israjHaliri/go-hexagonal-service/pkg/listing"
+	"github.com/israjHaliri/go-hexagonal-service/pkg/saving"
 	"github.com/israjHaliri/go-hexagonal-service/pkg/storage/database"
 	"github.com/labstack/echo"
 )
@@ -17,10 +18,12 @@ func main() {
 	e := echo.New()
 
 	userRepository := database.NewUserRepository(gormDB)
+	roleRepository := database.NewRoleRepository(gormDB)
 
-	userService := listing.NewUserService(userRepository)
+	listingService := listing.NewService(userRepository, roleRepository)
+	savingService := saving.NewService(userRepository)
 
-	rest.NewUserHandler(e, userService)
+	rest.NewUserHandler(e, listingService, savingService)
 
 	e.Logger.Fatal(e.Start(":10000"))
 }

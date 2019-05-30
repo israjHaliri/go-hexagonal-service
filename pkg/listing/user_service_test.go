@@ -23,8 +23,8 @@ func TestGetAllUsers(t *testing.T) {
 
 	userRepositoryMock.On("FindAllUser", mock.AnythingOfType("int"), mock.AnythingOfType("int")).Return(mockPaginator).Once()
 
-	userService := NewUserService(userRepositoryMock)
-	resultPaginator := userService.GetAllUsers(1, 10)
+	service := NewService(userRepositoryMock, nil)
+	resultPaginator := service.GetAllUsers(1, 10)
 
 	assert.Equal(t, resultPaginator.TotalRecord, mockPaginator.TotalRecord)
 	userRepositoryMock.AssertExpectations(t)

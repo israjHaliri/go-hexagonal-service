@@ -2,21 +2,23 @@ package listing
 
 import (
 	"github.com/biezhi/gorm-paginator/pagination"
-	"github.com/israjHaliri/go-hexagonal-service/pkg/storage/database"
 )
 
-type userService struct {
-	userRepository database.UserRepository
+func (implement *implement) GetAllUsers(page int, limit int) *pagination.Paginator {
+	return implement.userRepository.FindAllUser(page, limit)
 }
 
-type Service interface {
-	GetAllUsers(page int, limit int) *pagination.Paginator
-}
+func (implement *implement) GetUserById(id int) (User, error) {
+	currentUser, err := implement.userRepository.FindUserById(id)
 
-func NewUserService(userRepository database.UserRepository) Service {
-	return &userService{userRepository}
-}
+	user := User{}
+	user.ID = currentUser.ID
+	user.Username = currentUser.Username
+	user.Email = currentUser.Email
+	user.Password = currentUser.Password
+	user.Active = currentUser.Active
+	user.Created = currentUser.Created
+	user.Updated = currentUser.Updated
 
-func (userService *userService) GetAllUsers(page int, limit int) *pagination.Paginator {
-	return userService.userRepository.FindAllUser(page, limit)
+	return user, err
 }
