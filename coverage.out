@@ -1,0 +1,17 @@
+mode: set
+github.com/israjHaliri/go-hexagonal-service/pkg/storage/database/role_repository.go:16.56,18.2 1 1
+github.com/israjHaliri/go-hexagonal-service/pkg/storage/database/role_repository.go:20.59,26.2 3 1
+github.com/israjHaliri/go-hexagonal-service/pkg/storage/database/role_repository.go:28.55,36.2 4 1
+github.com/israjHaliri/go-hexagonal-service/pkg/storage/database/role_repository.go:38.60,45.16 4 1
+github.com/israjHaliri/go-hexagonal-service/pkg/storage/database/role_repository.go:49.2,49.18 1 1
+github.com/israjHaliri/go-hexagonal-service/pkg/storage/database/role_repository.go:45.16,47.3 1 0
+github.com/israjHaliri/go-hexagonal-service/pkg/storage/database/role_repository.go:52.61,58.2 3 1
+github.com/israjHaliri/go-hexagonal-service/pkg/storage/database/role_repository.go:60.50,66.2 3 1
+github.com/israjHaliri/go-hexagonal-service/pkg/storage/database/user_repository.go:17.56,19.2 1 1
+github.com/israjHaliri/go-hexagonal-service/pkg/storage/database/user_repository.go:21.59,27.2 3 1
+github.com/israjHaliri/go-hexagonal-service/pkg/storage/database/user_repository.go:29.82,43.2 4 1
+github.com/israjHaliri/go-hexagonal-service/pkg/storage/database/user_repository.go:45.60,52.16 4 1
+github.com/israjHaliri/go-hexagonal-service/pkg/storage/database/user_repository.go:56.2,56.18 1 1
+github.com/israjHaliri/go-hexagonal-service/pkg/storage/database/user_repository.go:52.16,54.3 1 0
+github.com/israjHaliri/go-hexagonal-service/pkg/storage/database/user_repository.go:59.61,65.2 3 1
+github.com/israjHaliri/go-hexagonal-service/pkg/storage/database/user_repository.go:67.50,73.2 3 1
