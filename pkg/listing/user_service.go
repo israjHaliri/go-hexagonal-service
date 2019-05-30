@@ -17,11 +17,11 @@ func NewUserService(userRepository database.UserRepository) Service {
 }
 
 func (userService *userService) GetAllUsers() ([]User, error) {
-	listUserDatabase, err := userService.userRepository.FindAllUser()
+	listUserDatabase, err := userService.userRepository.FindAllUser(1)
 
 	listUser := []User{}
 
-	if len(listUserDatabase) > 0 && err != nil {
+	if len(listUserDatabase) > 0 {
 		for _, data := range listUserDatabase {
 			user := User{}
 			user.ID = data.ID
@@ -35,5 +35,5 @@ func (userService *userService) GetAllUsers() ([]User, error) {
 		}
 	}
 
-	return listUser, nil
+	return listUser, err
 }

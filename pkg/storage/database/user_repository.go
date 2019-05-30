@@ -7,7 +7,7 @@ import (
 
 type UserRepository interface {
 	SaveUser(user User) (User, error)
-	FindAllUser() ([]User, error)
+	FindAllUser(total int) ([]User, error)
 	FindUserById(id int) (User, error)
 	UpdateUser(user User) (User, error)
 	DeleteUser(id int) error
@@ -25,7 +25,7 @@ func (conn *Connection) SaveUser(user User) (User, error) {
 	return user, err
 }
 
-func (conn *Connection) FindAllUser() ([]User, error) {
+func (conn *Connection) FindAllUser(total int) ([]User, error) {
 	listUser := []User{}
 
 	db := conn.GormDb
