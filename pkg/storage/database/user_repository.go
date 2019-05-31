@@ -10,6 +10,7 @@ type UserRepository interface {
 	SaveUser(user User) (User, error)
 	FindAllUser(page int, limit int) *util.Paginator
 	FindUserById(id int) (User, error)
+	FindUserByContext(coloumn string, value string) (User, error)
 	UpdateUser(user User) (User, error)
 	UpdateUserRole(userId int, roleIdExisting int, roleIdNew int) error
 	DeleteUser(id int) error
@@ -41,6 +42,20 @@ func (conn *Connection) FindAllUser(page int, limit int) *util.Paginator {
 	}, &listUser, util.TypeUser)
 
 	return paginator
+}
+
+func (conn *Connection) FindUserByContext(coloumn string, value string) (User, error) {
+	db := conn.GormDb
+
+	user := User{}
+
+	err := db.Preload("Roles").First(&user, "username = ?", value).Error
+
+	if err != nil {
+		return user, err
+	}
+
+	return user, nil
 }
 
 func (conn *Connection) FindUserById(id int) (User, error) {

@@ -8,6 +8,7 @@ import (
 	"github.com/israjHaliri/go-hexagonal-service/pkg/saving"
 	"github.com/israjHaliri/go-hexagonal-service/pkg/storage/database"
 	"github.com/labstack/echo"
+	"github.com/labstack/echo/middleware"
 )
 
 func main() {
@@ -17,6 +18,8 @@ func main() {
 	defer gormDB.Close()
 
 	e := echo.New()
+	e.Use(middleware.Logger())
+	e.Use(middleware.Recover())
 
 	userRepository := database.NewUserRepository(gormDB)
 	roleRepository := database.NewRoleRepository(gormDB)
