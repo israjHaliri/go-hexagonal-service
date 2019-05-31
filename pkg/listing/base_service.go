@@ -17,7 +17,7 @@ func NewService(userRepository database.UserRepository, roleRepository database.
 type Service interface {
 	GetAllUsers(page int, limit int) *util.Paginator
 	GetUserById(id int) (User, error)
-	GetUserByContext(coloumn string, value string) (User, error)
+	GetUserByContext(coloumn string, value string) (UserRole, error)
 	GetAllRoles() ([]Role, error)
 	GetRoleById(id int) (*Role, error)
 }

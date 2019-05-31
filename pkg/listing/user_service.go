@@ -23,10 +23,10 @@ func (implement *implement) GetUserById(id int) (User, error) {
 	return user, err
 }
 
-func (implement *implement) GetUserByContext(coloumn string, value string) (User, error) {
+func (implement *implement) GetUserByContext(coloumn string, value string) (UserRole, error) {
 	currentUser, err := implement.userRepository.FindUserByContext(coloumn, value)
 
-	user := User{}
+	user := UserRole{}
 	user.ID = currentUser.ID
 	user.Username = currentUser.Username
 	user.Email = currentUser.Email
@@ -34,6 +34,16 @@ func (implement *implement) GetUserByContext(coloumn string, value string) (User
 	user.Active = currentUser.Active
 	user.Created = currentUser.Created
 	user.Updated = currentUser.Updated
+
+	for _, data := range currentUser.Roles {
+		role := Role{}
+		role.ID = data.ID
+		role.Role = data.Role
+		role.Created = data.Created
+		role.Updated = data.Updated
+
+		user.Roles = append(user.Roles, role)
+	}
 
 	return user, err
 }

@@ -9,6 +9,7 @@ import (
 	"github.com/israjHaliri/go-hexagonal-service/pkg/util"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
+	"github.com/mitchellh/mapstructure"
 	"net/http"
 	"strconv"
 	"time"
@@ -28,26 +29,38 @@ func NewUserHandler(e *echo.Echo, lister listing.Service, saver saving.Service, 
 	}
 
 	e.POST("/login", handler.Login)
+	e.GET("/users", handler.GetUsers)
+	e.GET("/users/:id", handler.GetUserById)
 
-	r := e.Group("/users")
-	r.Use(middleware.JWT([]byte("MYSECRETTOCHANG3")))
+	//need auth
+	r := e.Group("/api")
+	r.Use(middleware.JWT([]byte(SecretJWT)))
 
-	r.POST("", handler.CreateUsers)
-	r.GET("", handler.GetUsers, isAdmin)
-	r.GET("/:id", handler.GetUserById)
-	r.PUT("", handler.UpdateUser)
-	r.PUT("/:id/roles/:id_role", handler.UpdateUserRole)
-	r.DELETE("/:id", handler.DeleteUser)
+	r.POST("/users", handler.CreateUsers, checkRole)
+	r.PUT("/users", handler.UpdateUser, checkRole)
+	r.PUT("/users/:id/roles/:id_role", handler.UpdateUserRole, checkRole)
+	r.DELETE("/users/:id", handler.DeleteUser, checkRole)
 }
 
-func isAdmin(next echo.HandlerFunc) echo.HandlerFunc {
+func checkRole(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		user := c.Get("user").(*jwt.Token)
 		claims := user.Claims.(jwt.MapClaims)
-		isAdmin := claims["admin"].(bool)
-		role := claims["role"]
-		fmt.Println("ROLE : ", role)
-		if isAdmin == false {
+
+		roles := &[]listing.Role{}
+
+		mapstructure.Decode(claims["role"], &roles)
+
+		fmt.Println("ROLE : ", roles)
+
+		isExist := false
+		for _, data := range *roles {
+			if data.Role == "ADMIN" {
+				isExist = true
+			}
+		}
+
+		if isExist == false {
 			return echo.ErrUnauthorized
 		}
 		return next(c)
@@ -74,12 +87,11 @@ func (userhandler *UserHandler) Login(c echo.Context) error {
 	// Set claims
 	claims := token.Claims.(jwt.MapClaims)
 	claims["name"] = user.Username
-	claims["admin"] = true
-	claims["role"] = "guna"
+	claims["role"] = user.Roles
 	claims["exp"] = time.Now().Add(time.Hour * 72).Unix()
 
 	// Generate encoded token and send it as response.
-	t, err := token.SignedString([]byte("MYSECRETTOCHANG3"))
+	t, err := token.SignedString([]byte(SecretJWT))
 	if err != nil {
 		return err
 	}
