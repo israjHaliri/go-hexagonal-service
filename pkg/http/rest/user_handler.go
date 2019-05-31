@@ -8,11 +8,11 @@ import (
 )
 
 type UserHandler struct {
-	Lister listing.UserService
-	Saver  saving.UserService
+	Lister listing.Service
+	Saver  saving.Service
 }
 
-func NewUserHandler(e *echo.Echo, lister listing.UserService, saver saving.UserService) {
+func NewUserHandler(e *echo.Echo, lister listing.Service, saver saving.Service) {
 	handler := &UserHandler{
 		Lister: lister,
 		Saver:  saver,
@@ -32,7 +32,7 @@ func (userhandler *UserHandler) GetUsers(c echo.Context) error {
 }
 
 func (userhandler *UserHandler) CreateUsers(c echo.Context) error {
-	user, err := userhandler.Saver.CreateUser(&saving.User{})
+	user, err := userhandler.Saver.CreateUser(&saving.SaveUser{})
 
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err)

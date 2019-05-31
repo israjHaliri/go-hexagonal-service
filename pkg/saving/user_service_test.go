@@ -21,11 +21,11 @@ func TestSaveUser(t *testing.T) {
 	mockUser.Created = time.Now()
 	mockUser.Updated = time.Now()
 
-	userRepositoryMock.On("SaveUser", mock.AnythingOfType("User")).Return(mockUser, nil).Once()
+	userRepositoryMock.On("SaveUser", mock.AnythingOfType("SaveUser")).Return(mockUser, nil).Once()
 
-	userService := NewUserService(userRepositoryMock)
+	userService := NewService(userRepositoryMock, nil)
 
-	var user User
+	var user SaveUser
 	user.Username = "israj"
 	user.Email = "israj.haliri@gmail.com"
 	user.Password = "12345678"

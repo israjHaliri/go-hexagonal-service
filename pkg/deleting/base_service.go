@@ -1,7 +1,6 @@
-package listing
+package deleting
 
 import (
-	"github.com/biezhi/gorm-paginator/pagination"
 	"github.com/israjHaliri/go-hexagonal-service/pkg/storage/database"
 )
 
@@ -15,8 +14,6 @@ func NewService(userRepository database.UserRepository, roleRepository database.
 }
 
 type Service interface {
-	GetAllUsers(page int, limit int) *pagination.Paginator
-	GetUserById(id int) (User, error)
-	GetAllRoles() ([]Role, error)
-	GetRoleById(id int) (Role, error)
+	RemoveUser(id int) error
+	RemoveRole(id int) error
 }

@@ -5,20 +5,7 @@ import (
 	"time"
 )
 
-type implementUser struct {
-	userRepository database.UserRepository
-}
-
-type UserService interface {
-	CreateUser(user *User) (*User, error)
-	UpdateUser(user *User) (*User, error)
-}
-
-func NewService(userRepository database.UserRepository) UserService {
-	return &implementUser{userRepository}
-}
-
-func (userService *implementUser) CreateUser(user *User) (*User, error) {
+func (implement *implement) CreateUser(user *SaveUser) (*SaveUser, error) {
 	dbUser := database.User{}
 	dbUser.Username = user.Username
 	dbUser.Email = user.Email
@@ -26,11 +13,24 @@ func (userService *implementUser) CreateUser(user *User) (*User, error) {
 	dbUser.Active = user.Active
 	dbUser.Created = time.Now()
 
-	_, err := userService.userRepository.SaveUser(dbUser)
+	_, err := implement.userRepository.SaveUser(dbUser)
 
 	return user, err
 }
 
-func (userService *implementUser) UpdateUser(user *User) (*User, error) {
-	panic("implement me")
+func (implement *implement) UpdateUser(user *UpdateUser) (*UpdateUser, error) {
+	dbUser, errGet := implement.userRepository.FindUserById(user.ID)
+
+	if errGet != nil {
+		return user, errGet
+	}
+	dbUser.Username = user.Username
+	dbUser.Email = user.Email
+	dbUser.Password = user.Password
+	dbUser.Active = user.Active
+	dbUser.Updated = time.Now()
+
+	_, err := implement.userRepository.UpdateUser(dbUser)
+
+	return user, err
 }
