@@ -18,6 +18,15 @@ func (implement *implement) CreateUser(user *SaveUser) (*SaveUser, error) {
 	dbUser.Active = user.Active
 	dbUser.Created = time.Now()
 
+	roles := []database.Role{}
+	for _, data := range user.Role {
+		role, _ := implement.roleRepository.FindRoleById(data.ID)
+		role.Updated = nil
+		roles = append(roles, role)
+	}
+
+	dbUser.Roles = roles
+
 	_, err := implement.userRepository.SaveUser(dbUser)
 
 	return user, err
@@ -38,9 +47,14 @@ func (implement *implement) UpdateUser(user *UpdateUser) (*UpdateUser, error) {
 	dbUser.Password = pass
 
 	dbUser.Active = user.Active
-	dbUser.Updated = time.Now()
+	t := time.Now()
+	dbUser.Updated = &t
 
 	_, err := implement.userRepository.UpdateUser(dbUser)
 
 	return user, err
+}
+
+func (implement *implement) UpdateUserRole(userId int, roleId int, userRole *UpdateUserRole) error {
+	return implement.userRepository.UpdateUserRole(userId, roleId, userRole.ID)
 }

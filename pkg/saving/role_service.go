@@ -22,7 +22,8 @@ func (implement *implement) UpdateRole(role *UpdateRole) (*UpdateRole, error) {
 		return role, errGet
 	}
 	dbRole.Role = role.Role
-	dbRole.Updated = time.Now()
+	t := time.Now()
+	dbRole.Updated = &t
 
 	_, err := implement.roleRepository.UpdateRole(dbRole)
 

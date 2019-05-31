@@ -11,6 +11,7 @@ type UserRepository interface {
 	FindAllUser(page int, limit int) *util.Paginator
 	FindUserById(id int) (User, error)
 	UpdateUser(user User) (User, error)
+	UpdateUserRole(userId int, roleIdExisting int, roleIdNew int) error
 	DeleteUser(id int) error
 }
 
@@ -62,6 +63,14 @@ func (conn *Connection) UpdateUser(user User) (User, error) {
 	err := db.Save(&user).Error
 
 	return user, err
+}
+
+func (conn *Connection) UpdateUserRole(userId int, roleIdExisting int, roleIdNew int) error {
+	db := conn.GormDb
+
+	err := db.Table("user_roles").Where("user_id = ? AND role_id = ?", userId, roleIdExisting).Update("role_id", roleIdNew).Error
+
+	return err
 }
 
 func (conn *Connection) DeleteUser(id int) error {
