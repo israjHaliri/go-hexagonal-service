@@ -1,10 +1,10 @@
 package saving
 
 type SaveRole struct {
-	Role string `json:"role" gorm:"unique_index:idx_role_name"`
+	Role string `json:"role"`
 }
 
 type UpdateRole struct {
 	ID   int    `json:"id"`
-	Role string `json:"role" gorm:"unique_index:idx_role_name"`
+	Role string `json:"role"`
 }

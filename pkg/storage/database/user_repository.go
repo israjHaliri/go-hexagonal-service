@@ -1,14 +1,14 @@
 package database
 
 import (
-	"github.com/biezhi/gorm-paginator/pagination"
+	"github.com/israjHaliri/go-hexagonal-service/pkg/util"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
 
 type UserRepository interface {
 	SaveUser(user User) (User, error)
-	FindAllUser(page int, limit int) *pagination.Paginator
+	FindAllUser(page int, limit int) *util.Paginator
 	FindUserById(id int) (User, error)
 	UpdateUser(user User) (User, error)
 	DeleteUser(id int) error
@@ -26,18 +26,18 @@ func (conn *Connection) SaveUser(user User) (User, error) {
 	return user, err
 }
 
-func (conn *Connection) FindAllUser(page int, limit int) *pagination.Paginator {
+func (conn *Connection) FindAllUser(page int, limit int) *util.Paginator {
 	var listUser []User
 
 	db := conn.GormDb
 
-	paginator := pagination.Paging(&pagination.Param{
+	paginator := util.Paging(&util.ParamPaging{
 		DB:      db,
 		Page:    page,
 		Limit:   limit,
 		OrderBy: []string{"id desc"},
 		ShowSQL: false,
-	}, &listUser)
+	}, &listUser, util.TypeUser)
 
 	return paginator
 }
@@ -47,7 +47,7 @@ func (conn *Connection) FindUserById(id int) (User, error) {
 
 	user := User{}
 
-	err := db.Where("id = ?", id).First(&user).Error
+	err := db.Preload("Roles").First(&user, "id = ?", id).Error
 
 	if err != nil {
 		return user, err

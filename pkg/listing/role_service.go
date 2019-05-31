@@ -17,7 +17,7 @@ func (implement *implement) GetAllRoles() ([]Role, error) {
 	return listRole, err
 }
 
-func (implement *implement) GetRoleById(id int) (Role, error) {
+func (implement *implement) GetRoleById(id int) (*Role, error) {
 	currentRole, err := implement.roleRepository.FindRoleById(id)
 
 	role := Role{}
@@ -26,5 +26,5 @@ func (implement *implement) GetRoleById(id int) (Role, error) {
 	role.Created = currentRole.Created
 	role.Updated = currentRole.Updated
 
-	return role, err
+	return &role, err
 }

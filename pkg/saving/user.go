@@ -5,7 +5,7 @@ type SaveUser struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
 	Active   bool   `json:"active"`
-	Role     []Role
+	Role     []SaveRole
 }
 
 type UpdateUser struct {
@@ -14,5 +14,5 @@ type UpdateUser struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
 	Active   bool   `json:"active"`
-	Role     []Role
+	Role     []SaveRole
 }

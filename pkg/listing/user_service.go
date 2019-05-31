@@ -1,10 +1,8 @@
 package listing
 
-import (
-	"github.com/biezhi/gorm-paginator/pagination"
-)
+import "github.com/israjHaliri/go-hexagonal-service/pkg/util"
 
-func (implement *implement) GetAllUsers(page int, limit int) *pagination.Paginator {
+func (implement *implement) GetAllUsers(page int, limit int) *util.Paginator {
 	return implement.userRepository.FindAllUser(page, limit)
 }
 

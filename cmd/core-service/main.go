@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/israjHaliri/go-hexagonal-service/pkg/config"
+	"github.com/israjHaliri/go-hexagonal-service/pkg/deleting"
 	"github.com/israjHaliri/go-hexagonal-service/pkg/http/rest"
 	"github.com/israjHaliri/go-hexagonal-service/pkg/listing"
 	"github.com/israjHaliri/go-hexagonal-service/pkg/saving"
@@ -21,9 +22,11 @@ func main() {
 	roleRepository := database.NewRoleRepository(gormDB)
 
 	listingService := listing.NewService(userRepository, roleRepository)
-	savingService := saving.NewService(userRepository)
+	savingService := saving.NewService(userRepository, roleRepository)
+	deleteService := deleting.NewService(userRepository, roleRepository)
 
-	rest.NewUserHandler(e, listingService, savingService)
+	rest.NewUserHandler(e, listingService, savingService, deleteService)
+	rest.NewRoleHandler(e, listingService, savingService, deleteService)
 
 	e.Logger.Fatal(e.Start(":10000"))
 }
