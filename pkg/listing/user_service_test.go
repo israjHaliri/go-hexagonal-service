@@ -1,8 +1,8 @@
 package listing
 
 import (
-	"github.com/biezhi/gorm-paginator/pagination"
 	"github.com/israjHaliri/go-hexagonal-service/pkg/storage/mocks"
+	"github.com/israjHaliri/go-hexagonal-service/pkg/util"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"testing"
@@ -11,7 +11,7 @@ import (
 func TestGetAllUsers(t *testing.T) {
 	userRepositoryMock := new(mocks.UserRepositoryMock)
 
-	var mockPaginator = new(pagination.Paginator)
+	var mockPaginator = new(util.Paginator)
 
 	mockPaginator.TotalRecord = 10
 	mockPaginator.Records = []User{}

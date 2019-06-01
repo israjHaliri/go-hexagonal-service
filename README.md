@@ -12,7 +12,7 @@
 
 ## To run testing
     + run migration go run cmd/migration/main.go
-    + go test -v ./pkg/storage/database/ -count=1 -coverprofile coverage.out && go tool cover -html=coverage.out
+    + go test -v ./pkg/listing ./pkg/saving/ ./pkg/storage/database/ -count=1 -coverprofile coverage.out && go tool cover -html=coverage.out
 
 ## Note: 
     ++ for production use supervisor using commad go run {app_name}

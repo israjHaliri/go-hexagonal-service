@@ -1,8 +1,8 @@
 package mocks
 
 import (
-	"github.com/biezhi/gorm-paginator/pagination"
 	"github.com/israjHaliri/go-hexagonal-service/pkg/storage/database"
+	"github.com/israjHaliri/go-hexagonal-service/pkg/util"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"github.com/stretchr/testify/mock"
 )
@@ -34,16 +34,16 @@ func (mock *UserRepositoryMock) SaveUser(user database.User) (database.User, err
 	return return0, return1
 }
 
-func (mock *UserRepositoryMock) FindAllUser(page int, limit int) *pagination.Paginator {
+func (mock *UserRepositoryMock) FindAllUser(page int, limit int) *util.Paginator {
 	retrival := mock.Called(page, limit)
 
-	var return0 *pagination.Paginator
+	var return0 *util.Paginator
 
-	if ref, ok := retrival.Get(0).(func() *pagination.Paginator); ok {
+	if ref, ok := retrival.Get(0).(func() *util.Paginator); ok {
 		return0 = ref()
 	} else {
 		if retrival.Get(0) != nil {
-			return0 = retrival.Get(0).(*pagination.Paginator)
+			return0 = retrival.Get(0).(*util.Paginator)
 		}
 	}
 
@@ -54,7 +54,15 @@ func (mock *UserRepositoryMock) FindUserById(id int) (database.User, error) {
 	panic("implement me")
 }
 
+func (mock *UserRepositoryMock) FindUserByContext(coloumn string, value string) (database.User, error) {
+	panic("implement me")
+}
+
 func (mock *UserRepositoryMock) UpdateUser(user database.User) (database.User, error) {
+	panic("implement me")
+}
+
+func (mock *UserRepositoryMock) UpdateUserRole(userId int, roleIdExisting int, roleIdNew int) error {
 	panic("implement me")
 }
 

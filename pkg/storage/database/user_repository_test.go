@@ -78,7 +78,8 @@ func TestUpdateUser(t *testing.T) {
 	user.Password = "12345678"
 	user.Email = "israj.haliri@gmail.com"
 	user.Active = true
-	user.Updated = time.Now()
+	timeLocal := time.Now()
+	user.Updated = &timeLocal
 
 	_, errUpdate := userRepository.UpdateUser(user)
 

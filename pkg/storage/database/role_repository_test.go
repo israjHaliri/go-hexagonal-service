@@ -70,7 +70,8 @@ func TestUpdateRole(t *testing.T) {
 
 	role := listRole[0]
 	role.Role = "SUPER_ADMIN"
-	role.Updated = time.Now()
+	timeLocal := time.Now()
+	role.Updated = &timeLocal
 
 	_, err := roleRepository.UpdateRole(role)
 
