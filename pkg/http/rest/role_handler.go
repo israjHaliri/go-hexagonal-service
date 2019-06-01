@@ -1,10 +1,14 @@
 package rest
 
 import (
+	"fmt"
+	"github.com/dgrijalva/jwt-go"
 	"github.com/israjHaliri/go-hexagonal-service/pkg/deleting"
 	"github.com/israjHaliri/go-hexagonal-service/pkg/listing"
 	"github.com/israjHaliri/go-hexagonal-service/pkg/saving"
 	"github.com/labstack/echo"
+	"github.com/labstack/echo/middleware"
+	"github.com/mitchellh/mapstructure"
 	"net/http"
 	"strconv"
 )
@@ -22,11 +26,36 @@ func NewRoleHandler(e *echo.Echo, lister listing.Service, saver saving.Service, 
 		Deleter: deleter,
 	}
 
-	e.POST("/roles", handler.CreateRoles)
+	e.POST("/roles", handler.CreateRoles, middleware.JWT([]byte(SecretJWT)), checkPermissionRoleAPI)
 	e.GET("/roles", handler.GetRoles)
 	e.GET("/roles/:id", handler.GetRoleById)
-	e.PUT("/roles", handler.UpdateRole)
-	e.DELETE("/roles/:id", handler.DeleteRole)
+	e.PUT("/roles", handler.UpdateRole, middleware.JWT([]byte(SecretJWT)), checkPermissionRoleAPI)
+	e.DELETE("/roles/:id", handler.DeleteRole, middleware.JWT([]byte(SecretJWT)), checkPermissionRoleAPI)
+}
+
+func checkPermissionRoleAPI(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		user := c.Get("user").(*jwt.Token)
+		claims := user.Claims.(jwt.MapClaims)
+
+		roles := &[]listing.Role{}
+
+		mapstructure.Decode(claims["role"], &roles)
+
+		fmt.Println("ROLE : ", roles)
+
+		isExist := false
+		for _, data := range *roles {
+			if data.Role == "ADMIN" {
+				isExist = true
+			}
+		}
+
+		if isExist == false {
+			return echo.ErrUnauthorized
+		}
+		return next(c)
+	}
 }
 
 func (rolehandler *RoleHandler) CreateRoles(c echo.Context) error {

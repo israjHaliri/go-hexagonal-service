@@ -29,20 +29,15 @@ func NewUserHandler(e *echo.Echo, lister listing.Service, saver saving.Service, 
 	}
 
 	e.POST("/login", handler.Login)
+	e.POST("/users", handler.CreateUsers, middleware.JWT([]byte(SecretJWT)), checkPermissionUserAPI)
 	e.GET("/users", handler.GetUsers)
 	e.GET("/users/:id", handler.GetUserById)
-
-	//need auth
-	r := e.Group("/api")
-	r.Use(middleware.JWT([]byte(SecretJWT)))
-
-	r.POST("/users", handler.CreateUsers, checkRole)
-	r.PUT("/users", handler.UpdateUser, checkRole)
-	r.PUT("/users/:id/roles/:id_role", handler.UpdateUserRole, checkRole)
-	r.DELETE("/users/:id", handler.DeleteUser, checkRole)
+	e.PUT("/users", handler.UpdateUser, middleware.JWT([]byte(SecretJWT)), checkPermissionUserAPI)
+	e.PUT("/users/:id/roles/:id_role", handler.UpdateUserRole, middleware.JWT([]byte(SecretJWT)), checkPermissionUserAPI)
+	e.DELETE("/users/:id", handler.DeleteUser, middleware.JWT([]byte(SecretJWT)), checkPermissionUserAPI)
 }
 
-func checkRole(next echo.HandlerFunc) echo.HandlerFunc {
+func checkPermissionUserAPI(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		user := c.Get("user").(*jwt.Token)
 		claims := user.Claims.(jwt.MapClaims)
